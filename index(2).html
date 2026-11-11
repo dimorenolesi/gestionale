@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestionale Case Vacanza Noli</title>
+<meta name="theme-color" content="#0b4f6c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Case Noli">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b4f6c'/%3E%3Cpath d='M14 34 32 18l18 16v14H14z' fill='%23f6f1e7'/%3E%3Crect x='28' y='36' width='8' height='12' fill='%230e7490'/%3E%3C/svg%3E">
+<style>
+:root{
+  --mare:#0b4f6c; --mare2:#0e7490; --sabbia:#f6f1e7; --carta:#fffdf8; --ink:#1f2933; --muted:#6b7280;
+  --linea:#e6dfd1; --ok:#15803d; --warn:#b45309; --err:#b91c1c; --r:10px;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--sabbia);color:var(--ink);font-size:14px}
+header{background:var(--mare);color:#fff;padding:10px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+header h1{font-size:17px;margin:0;font-weight:650;letter-spacing:.2px}
+header h1 span{opacity:.7;font-weight:400}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;border:0;color:#d6ecf3;padding:7px 11px;border-radius:7px;cursor:pointer;font-size:13.5px}
+nav button.on,nav button:hover{background:rgba(255,255,255,.14);color:#fff}
+.utente{margin-left:auto;font-size:12px;opacity:.8}
+main{padding:18px;max-width:1400px;margin:0 auto}
+.card{background:var(--carta);border:1px solid var(--linea);border-radius:var(--r);padding:16px;margin-bottom:16px}
+.card h2{margin:0 0 12px;font-size:15px}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.kpi .v{font-size:24px;font-weight:700;margin-top:4px}
+.kpi .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.kpi .s{color:var(--muted);font-size:12px;margin-top:2px}
+.btn{background:var(--mare2);color:#fff;border:0;border-radius:8px;padding:8px 13px;cursor:pointer;font-size:13.5px;font-weight:550}
+.btn:hover{filter:brightness(1.08)}
+.btn.sec{background:#fff;color:var(--mare);border:1px solid var(--linea)}
+.btn.del{background:#fff;color:var(--err);border:1px solid #f3c7c7}
+.btn.sm{padding:5px 9px;font-size:12.5px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.bar .sp{flex:1}
+input,select,textarea{font:inherit;padding:7px 9px;border:1px solid #d8d0c0;border-radius:7px;background:#fff;color:var(--ink);width:100%}
+textarea{min-height:60px}
+label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+.f{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.f .w2{grid-column:span 2}
+.chk{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink)}
+.chk input{width:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--linea);vertical-align:top}
+th{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;font-weight:600;background:#faf6ee}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.click{cursor:pointer} tr.click:hover td{background:#f8f3e8}
+tfoot td{font-weight:700;background:#faf6ee}
+.tag{display:inline-block;padding:2px 7px;border-radius:20px;font-size:11.5px;font-weight:600;background:#eef2f5;color:#334155;white-space:nowrap}
+.tag.ok{background:#dcfce7;color:#166534}.tag.warn{background:#fef3c7;color:#92400e}.tag.err{background:#fee2e2;color:#991b1b}.tag.info{background:#e0f2fe;color:#075985}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.muted{color:var(--muted)} .small{font-size:12px}
+.scroll{overflow-x:auto}
+/* timeline */
+.tl{min-width:900px}
+.tl-row{display:grid;align-items:stretch;border-bottom:1px solid var(--linea);position:relative}
+.tl-head{font-size:11px;color:var(--muted);text-align:center}
+.tl-head div{padding:3px 0;border-left:1px solid #f0eadf}
+.tl-head .we{background:#f4eee2}
+.tl-head .oggi{background:var(--mare2);color:#fff;border-radius:4px}
+.tl-name{padding:8px 8px;font-weight:600;font-size:12.5px;background:#faf6ee;border-right:1px solid var(--linea);position:sticky;left:0;z-index:2;display:flex;align-items:center}
+.tl-cell{border-left:1px solid #f3eee4;min-height:40px;cursor:pointer}
+.tl-cell.we{background:#fbf8f1}
+.tl-cell:hover{background:#eef7fa}
+.tl-bar{grid-row:1;margin:6px 1px;border-radius:6px;color:#fff;font-size:11.5px;padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;z-index:1;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.tl-bar.ota{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.18) 0 6px,transparent 6px 12px)}
+.tl-bar.opz{opacity:.6;border:2px dashed #fff}
+/* mese singola casa */
+.mese{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mese .gs{font-size:11px;color:var(--muted);text-align:center;text-transform:uppercase}
+.giorno{background:#fff;border:1px solid var(--linea);border-radius:7px;min-height:78px;padding:4px 5px;cursor:pointer;font-size:12px;position:relative}
+.giorno.fuori{opacity:.35}
+.giorno .num{font-weight:600;font-size:12px}
+.giorno.oggi{outline:2px solid var(--mare2)}
+.giorno .occ{margin-top:3px;border-radius:5px;color:#fff;padding:2px 4px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.giorno .prezzo{position:absolute;right:5px;top:4px;font-size:10.5px;color:var(--muted)}
+/* modale */
+.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:30px 12px;overflow-y:auto}
+.modal-bg.on{display:flex}
+.modal{background:var(--carta);border-radius:12px;max-width:860px;width:100%;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.modal h3{margin:0 0 14px;font-size:17px}
+.sez{font-size:12px;font-weight:700;color:var(--mare);text-transform:uppercase;letter-spacing:.5px;margin:16px 0 8px;border-top:1px solid var(--linea);padding-top:12px}
+.riepilogo{background:#eef7fa;border-radius:8px;padding:10px 12px;font-size:13px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 14px;margin-top:10px}
+.riepilogo b{display:block;font-size:15px}
+.avviso{background:#fef3c7;color:#78350f;border-radius:8px;padding:8px 12px;margin-top:10px;font-size:13px}
+.avviso.err{background:#fee2e2;color:#7f1d1d}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1f2933;color:#fff;padding:10px 16px;border-radius:8px;z-index:60;display:none}
+.demo{background:#fde68a;color:#78350f;text-align:center;padding:6px;font-size:12.5px}
+.chart svg{width:100%;height:auto}
+.legenda{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;margin-top:6px}
+.vuoto{color:var(--muted);padding:14px;text-align:center}
+code.u{font-size:11px;background:#f1ece1;padding:3px 6px;border-radius:5px;word-break:break-all;display:block}
+@media (max-width:700px){header{position:static}nav button{padding:6px 8px}.card{overflow-x:auto}td input{min-width:150px}td input[type=checkbox],td input[type=color]{min-width:0}main{padding:10px}.g2{grid-template-columns:1fr}.f .w2{grid-column:auto}header{padding:8px 10px}.utente{margin-left:0}}
+</style>
+</head>
+<body>
+<div id="demo" class="demo" style="display:none">Modalità DEMO: dati di esempio salvati solo in questo browser. Nella versione installata i dati stanno nel tuo Foglio Google.</div>
+<header>
+  <h1>Case Vacanza Noli <span>· gestionale</span></h1>
+  <nav id="nav"></nav>
+  <div class="utente" id="utente"></div>
+</header>
+<main id="app"><div class="vuoto">Caricamento…</div></main>
+
+<div class="modal-bg" id="mbg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   STRATO DATI: Apps Script (google.script.run) oppure DEMO
+   ========================================================= */
+// Indirizzo del deployment Apps Script (finisce con /exec). Serve quando questa pagina è ospitata fuori da Google (es. GitHub Pages).
+var ENDPOINT = 'https://script.google.com/macros/s/AKfycbx3zn1UikoDWzXlhDs7tTb3iPHSP8hCrHEyPan7YNT4kZg6r3t6sUE1w-wd2_6z91GH_Q/exec';
+var IN_APPS_SCRIPT = !!(window.google && google.script && google.script.run);
+var DEMO = !IN_APPS_SCRIPT && !ENDPOINT;
+var SESS_K = 'noli-gestionale-sessione';
+var Sess = {
+  get: function () { try { return localStorage.getItem(SESS_K) || ''; } catch (e) { return Sess._m || ''; } },
+  set: function (t) { Sess._m = t; try { if (t) localStorage.setItem(SESS_K, t); else localStorage.removeItem(SESS_K); } catch (e) {} }
+};
+var API = {
+  raw: function (fn, args) {
+    if (!IN_APPS_SCRIPT) {
+      return fetch(ENDPOINT, { method: 'POST', credentials: 'omit', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ fn: fn, args: args }) })
+        .then(function (r) { if (!r.ok) throw new Error('Server non raggiungibile (' + r.status + ')'); return r.json(); })
+        .then(function (j) { if (!j.ok) throw new Error(j.e); return j.r; });
+    }
+    return new Promise(function (ok, ko) {
+      var r = google.script.run.withSuccessHandler(ok).withFailureHandler(function (e) { ko(e); });
+      r[fn].apply(r, args);
+    });
+  },
+  call: function (fn) {
+    var args = [Sess.get()].concat(Array.prototype.slice.call(arguments, 1));
+    return API.raw(fn, args).catch(function (e) {
+      if (String(e && e.message || e).indexOf('SESSIONE_SCADUTA') >= 0) { Sess.set(''); mostraLogin('Accesso scaduto: entra di nuovo.'); }
+      throw e;
+    });
+  },
+  login: function (n, p) { return API.raw('apiLogin', [n, p]).then(JSON.parse); },
+  logout: function () { return DEMO ? Promise.resolve() : API.raw('apiLogout', [Sess.get()]); },
+  carica: function () { return DEMO ? Promise.resolve(Demo.carica()) : API.call('apiCarica').then(JSON.parse); },
+  salva: function (t, rec) { return DEMO ? Promise.resolve(Demo.salva(t, rec)) : API.call('apiSalva', t, rec).then(JSON.parse); },
+  elimina: function (t, id) { return DEMO ? Promise.resolve(Demo.elimina(t, id)) : API.call('apiElimina', t, id); },
+  sync: function () { return DEMO ? Promise.resolve(Demo.sync()) : API.call('apiSincronizza').then(JSON.parse); },
+  feedUrl: function (u) { return DEMO ? Promise.resolve(Demo.feedUrl(u)) : API.call('apiImpostaFeedUrl', u); }
+};
+var CHIAVI = { Case: 'id', Prenotazioni: 'id', Tariffe: 'id', Spese: 'id', Calendari: 'id', EventiOTA: 'uid', Impostazioni: 'chiave' };
+
+var Demo = {
+  K: 'noli-gestionale-demo-v1',
+  mem: null,
+  db: function () {
+    if (this.mem) return this.mem;
+    try { var s = localStorage.getItem(this.K); if (s) this.mem = JSON.parse(s); } catch (e) {}
+    if (!this.mem) this.mem = this.seme();
+    return this.mem;
+  },
+  persisti: function () { try { localStorage.setItem(this.K, JSON.stringify(this.mem)); } catch (e) {} },
+  carica: function () { var d = JSON.parse(JSON.stringify(this.db())); d.utente = 'demo@esempio.it'; d.token = 'demo-token'; d.feedBase = d._feed || ''; return d; },
+  salva: function (t, rec) {
+    var db = this.db(), k = CHIAVI[t];
+    if (!rec[k]) rec[k] = Math.random().toString(36).slice(2, 10);
+    if (t === 'Prenotazioni') { var o = new Date().toISOString(); if (!rec.creato) rec.creato = o; rec.modificato = o; }
+    var i = db[t].findIndex(function (x) { return x[k] === rec[k]; });
+    if (i >= 0) db[t][i] = rec; else db[t].push(rec);
+    this.persisti(); return JSON.parse(JSON.stringify(rec));
+  },
+  elimina: function (t, id) { var db = this.db(), k = CHIAVI[t]; db[t] = db[t].filter(function (x) { return x[k] !== id; }); this.persisti(); return true; },
+  sync: function () {
+    var db = this.db(), o = new Date().toISOString();
+    db.Calendari.forEach(function (c) { c.ultimoSync = o; c.esito = 'DEMO · nessun download reale'; });
+    this.persisti(); return { EventiOTA: db.EventiOTA, Calendari: db.Calendari };
+  },
+  feedUrl: function (u) { this.db()._feed = u; this.persisti(); return true; },
+  seme: function () {
+    var y = new Date().getFullYear(), oggi = iso(new Date());
+    var a = function (m, g) { return iso(new Date(Date.UTC(y, m - 1, g))); };
+    var b = function (n) { return addG(oggi, n); };
+    var C = [
+      { id: 'pria', nome: 'Pria du baxo', colore: '#0e7490', ota: true, ospitiMax: 4, tariffaBase: 120, pulizie: 50, minNotti: 3, ordine: 0 },
+      { id: 'cattedrale', nome: 'Bilocale Piazza della Cattedrale', colore: '#b45309', ota: true, ospitiMax: 4, tariffaBase: 110, pulizie: 50, minNotti: 3, ordine: 1 },
+      { id: 'easystay', nome: 'Noli Easy Stay', colore: '#15803d', ota: false, ospitiMax: 4, tariffaBase: 100, pulizie: 40, minNotti: 2, ordine: 2 },
+      { id: 'panoramic', nome: 'Noli Panoramic Terrace Apartment', colore: '#7c3aed', ota: false, ospitiMax: 4, tariffaBase: 130, pulizie: 50, minNotti: 3, ordine: 3 },
+      { id: 'stella', nome: 'Stella de ma', colore: '#be123c', ota: false, ospitiMax: 4, tariffaBase: 100, pulizie: 40, minNotti: 2, ordine: 4 }
+    ];
+    var P = [], n = 0;
+    var pr = function (casa, can, ci, co, osp, ad, bam, tax, tot, cap, host, extra) {
+      var r = { id: 'd' + (++n), casaId: casa, canale: can, stato: 'confermata', checkin: ci, checkout: co, oraArrivo: '16:00', ospite: osp, telefono: '', email: '',
+        adulti: ad, bambini: bam, ospitiTassa: tax, esentiTassa: 0, prezzoTotale: tot, pulizie: 50, commissione: 0, caparra: cap, caparraData: cap ? addG(ci, -40) : '',
+        caparraMetodo: cap ? 'Bonifico' : '', caparraRicevuta: !!cap, saldoRicevuto: ci < oggi, tassaIncassata: ci < oggi, alloggiatiInviati: ci < oggi, hostCheckin: host, hostCheckout: host, otaUid: '', note: '' };
+      for (var k in extra) r[k] = extra[k];
+      r.commissione = commDefault(can, tot); P.push(r);
+    };
+    pr('pria', 'Booking', a(6, 7), a(6, 14), 'Müller Klaus', 2, 2, 3, 1150, 0, 'Daniela');
+    pr('pria', 'Airbnb', a(7, 1), a(7, 10), 'Sophie Laurent', 2, 0, 2, 1480, 0, 'Cristina');
+    pr('pria', 'VRBO', a(8, 2), a(8, 16), 'Jan de Vries', 2, 1, 2, 2350, 0, 'Samuele');
+    pr('cattedrale', 'Diretto', a(7, 12), a(7, 19), 'Rossi Marco', 2, 1, 3, 950, 300, 'Matteo');
+    pr('cattedrale', 'Diretto', a(8, 9), a(8, 23), 'Bianchi Laura', 3, 0, 3, 2100, 600, 'Daniela');
+    pr('easystay', 'Diretto', a(6, 20), a(6, 27), 'Ferrari Giulia', 2, 0, 2, 780, 200, 'Cristina');
+    pr('easystay', 'Diretto', a(8, 1), a(8, 15), 'Colombo Andrea', 2, 2, 2, 1750, 500, 'Matteo');
+    pr('panoramic', 'Diretto', a(7, 20), a(8, 3), 'Esposito Anna', 4, 0, 4, 2600, 800, 'Samuele');
+    pr('panoramic', 'Diretto', a(9, 5), a(9, 12), 'Ricci Paolo', 2, 0, 2, 1050, 300, 'Daniela');
+    pr('stella', 'Diretto', a(7, 4), a(7, 11), 'Greco Sara', 2, 1, 2, 820, 250, 'Cristina');
+    pr('stella', 'Diretto', a(8, 10), a(8, 24), 'Moretti Luca', 2, 2, 3, 1800, 0, 'Matteo', { stato: 'opzione' });
+    pr('easystay', 'Diretto', b(3), b(8), 'Conti Elena', 2, 0, 2, 520, 150, 'Matteo', { caparraRicevuta: false });
+    pr('stella', 'Diretto', b(1), b(4), 'Lombardi Davide', 2, 0, 2, 330, 100, 'Samuele');
+    return {
+      Case: C, Prenotazioni: P,
+      Tariffe: [
+        { id: 't1', casaId: 'pria', nome: 'Alta stagione', dal: a(7, 1), al: a(8, 31), prezzoNotte: 160, minNotti: 7 },
+        { id: 't2', casaId: 'pria', nome: 'Media', dal: a(6, 1), al: a(6, 30), prezzoNotte: 135, minNotti: 4 },
+        { id: 't3', casaId: 'panoramic', nome: 'Ferragosto', dal: a(8, 8), al: a(8, 22), prezzoNotte: 190, minNotti: 7 }
+      ],
+      Spese: [
+        { id: 's1', casaId: 'pria', data: a(6, 1), categoria: 'Pulizie', descrizione: 'Pulizie giugno', importo: 240 },
+        { id: 's2', casaId: 'stella', data: a(7, 15), categoria: 'Manutenzione', descrizione: 'Climatizzatore', importo: 180 },
+        { id: 's3', casaId: '', data: a(5, 10), categoria: 'Biancheria', descrizione: 'Set lenzuola tutte le case', importo: 320 }
+      ],
+      Calendari: [
+        { id: 'c1', casaId: 'pria', fonte: 'Booking', url: 'https://admin.booking.com/hotel/hoteladmin/ical.html?t=…', ultimoSync: '', esito: '' },
+        { id: 'c2', casaId: 'pria', fonte: 'Airbnb', url: 'https://www.airbnb.it/calendar/ical/….ics', ultimoSync: '', esito: '' }
+      ],
+      EventiOTA: [
+        { uid: 'demo-ota-1', casaId: 'pria', fonte: 'Booking', inizio: b(5), fine: b(9), titolo: 'CLOSED - Not available', visto: '' },
+        { uid: 'demo-ota-2', casaId: 'pria', fonte: 'Airbnb', inizio: a(9, 10), fine: a(9, 17), titolo: 'Reserved', visto: '' }
+      ],
+      Impostazioni: []
+    };
+  }
+};
+
+/* =========================================================
+   UTILITÀ
+   ========================================================= */
+function iso(d) { return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString().slice(0, 10); }
+function dU(s) { return new Date(s + 'T00:00:00Z'); }
+function addG(s, n) { var d = dU(s); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+function notti(a, b) { return Math.round((dU(b) - dU(a)) / 864e5); }
+function oggi() { return iso(new Date()); }
+function fd(s, anno) { if (!s) return ''; var p = s.split('-'); return p[2] + '/' + p[1] + (anno === false ? '' : '/' + p[0].slice(2)); }
+var MESI = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+var GS = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+function eur(v, dec) { return (Number(v) || 0).toLocaleString('it-IT', { style: 'currency', currency: 'EUR', minimumFractionDigits: dec === undefined ? 0 : dec, maximumFractionDigits: dec === undefined ? 0 : dec, useGrouping: 'always' }); }
+function eur2(v) { return eur(v, 2); }
+function num(v) { var n = parseFloat(String(v === undefined || v === null ? '' : v).replace(',', '.')); return isNaN(n) ? 0 : n; }
+function bool(v) { return v === true || v === 'TRUE' || v === 'true'; }
+function esc(s) { return String(s === undefined || s === null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function $(id) { return document.getElementById(id); }
+function toast(m) { var t = $('toast'); t.textContent = m; t.style.display = 'block'; clearTimeout(t._t); t._t = setTimeout(function () { t.style.display = 'none'; }, 2600); }
+function errore(e) { console.error(e); toast('Errore: ' + (e && e.message || e)); }
+
+/* =========================================================
+   STATO E IMPOSTAZIONI
+   ========================================================= */
+var S = { vista: 'panoramica', meseCal: null, casaCal: '', modoCal: 'tutte', filtri: {}, report: null };
+var D = null;
+var HOST_DEFAULT = ['Daniela', 'Cristina', 'Samuele', 'Matteo'];
+var CANALI = ['Diretto', 'Booking', 'Airbnb', 'HomeToGo', 'VRBO', 'Altro'];
+var CANALI_OTA = ['Booking', 'Airbnb', 'HomeToGo', 'VRBO'];
+var IMP_DEFAULT = {
+  tassaImporto: 1.5, tassaMaxNotti: 5, tassaEta: 12, tassaMesi: '6,7,8,9,10',
+  comm_Booking: 15, comm_Airbnb: 15.5, comm_HomeToGo: 12, comm_VRBO: 8, comm_Diretto: 0, comm_Altro: 0,
+  host_Daniela: '', host_Cristina: '', host_Samuele: '', host_Matteo: ''
+};
+function imp(k) { var r = D && D.Impostazioni.find(function (x) { return x.chiave === k; }); return r && r.valore !== '' && r.valore !== undefined ? r.valore : IMP_DEFAULT[k]; }
+function commDefault(canale, tot) { return Math.round(num(tot) * num(imp('comm_' + canale)) ) / 100; }
+function casa(id) { return D.Case.find(function (c) { return c.id === id; }) || { nome: '(casa eliminata)', colore: '#999' }; }
+function caseOrd() { return D.Case.slice().sort(function (a, b) { return num(a.ordine) - num(b.ordine); }); }
+function attive() { return D.Prenotazioni.filter(function (p) { return p.stato !== 'cancellata'; }); }
+
+/* ---------- Tassa di soggiorno ----------
+   € X a persona sopra i 12 anni, per notte, per al massimo le prime N notti di soggiorno continuato,
+   solo per le notti che cadono nei mesi indicati (default giugno–ottobre). */
+function notteTassabili(p) {
+  var mesi = String(imp('tassaMesi')).split(',').map(function (x) { return parseInt(x, 10); });
+  var max = num(imp('tassaMaxNotti')), n = notti(p.checkin, p.checkout), out = [];
+  for (var i = 0; i < Math.min(n, max); i++) {
+    var g = addG(p.checkin, i);
+    if (mesi.indexOf(parseInt(g.slice(5, 7), 10)) >= 0) out.push(g);
+  }
+  return out;
+}
+function personeTassa(p) { return Math.max(0, num(p.ospitiTassa) - num(p.esentiTassa)); }
+function tassa(p) { return personeTassa(p) * notteTassabili(p).length * num(imp('tassaImporto')); }
+
+/* ---------- Economia di una prenotazione ---------- */
+function netto(p) { return num(p.prezzoTotale) - num(p.commissione); }
+function incassato(p) {
+  if (bool(p.saldoRicevuto)) return num(p.prezzoTotale);
+  return bool(p.caparraRicevuta) ? num(p.caparra) : 0;
+}
+function residuo(p) { return Math.max(0, num(p.prezzoTotale) - incassato(p)); }
+function isOtaCanale(c) { return CANALI_OTA.indexOf(c) >= 0; }
+
+/* ---------- Tariffe ---------- */
+function tariffaNotte(casaId, g) {
+  var t = D.Tariffe.filter(function (t) { return t.casaId === casaId && t.dal <= g && t.al >= g; });
+  if (t.length) { t.sort(function (a, b) { return notti(a.dal, a.al) - notti(b.dal, b.al); }); return { prezzo: num(t[0].prezzoNotte), min: num(t[0].minNotti), nome: t[0].nome }; }
+  var c = casa(casaId); return { prezzo: num(c.tariffaBase), min: num(c.minNotti), nome: 'Base' };
+}
+function preventivo(casaId, ci, co) {
+  var n = notti(ci, co), tot = 0, min = 0;
+  for (var i = 0; i < n; i++) { var t = tariffaNotte(casaId, addG(ci, i)); tot += t.prezzo; if (i === 0) min = t.min; }
+  var pul = num(casa(casaId).pulizie);
+  return { notti: n, soggiorno: tot, pulizie: pul, totale: tot + pul, minNotti: min };
+}
+
+/* ---------- Occupazione e conflitti ---------- */
+function eventiCasa(casaId) {
+  var uidCollegati = {};
+  var out = [];
+  D.Prenotazioni.forEach(function (p) {
+    if (p.otaUid) uidCollegati[p.otaUid] = true;
+    if (p.casaId === casaId && p.stato !== 'cancellata') out.push({ tipo: 'p', id: p.id, inizio: p.checkin, fine: p.checkout, p: p });
+  });
+  D.EventiOTA.forEach(function (e) {
+    if (e.casaId === casaId && !uidCollegati[e.uid]) out.push({ tipo: 'o', id: e.uid, inizio: e.inizio, fine: e.fine, e: e });
+  });
+  return out;
+}
+function conflitti(casaId, ci, co, escludiId, escludiUid) {
+  return eventiCasa(casaId).filter(function (x) {
+    if (x.tipo === 'p' && x.id === escludiId) return false;
+    if (x.tipo === 'o' && x.id === escludiUid) return false;
+    return x.inizio < co && x.fine > ci;
+  });
+}
+
+/* =========================================================
+   AVVIO E NAVIGAZIONE
+   ========================================================= */
+var VISTE = [['panoramica', 'Panoramica'], ['calendario', 'Calendario'], ['prenotazioni', 'Prenotazioni'], ['guadagni', 'Guadagni'],
+  ['tassa', 'Tassa soggiorno'], ['tariffe', 'Tariffe'], ['spese', 'Spese'], ['impostazioni', 'Impostazioni']];
+
+function nav() {
+  $('nav').innerHTML = VISTE.map(function (v) { return '<button class="' + (S.vista === v[0] ? 'on' : '') + '" onclick="vai(\'' + v[0] + '\')">' + v[1] + '</button>'; }).join('');
+}
+function vai(v) { S.vista = v; render(); window.scrollTo(0, 0); }
+function render() {
+  nav();
+  var f = { panoramica: vPanoramica, calendario: vCalendario, prenotazioni: vPrenotazioni, guadagni: vGuadagni, tassa: vTassa, tariffe: vTariffe, spese: vSpese, impostazioni: vImpostazioni }[S.vista];
+  $('app').innerHTML = f();
+  if (S.vista === 'guadagni') disegnaGrafico();
+}
+function mostraLogin(msg) {
+  $('nav').innerHTML = ''; $('utente').innerHTML = '';
+  $('app').innerHTML = '<div class="card" style="max-width:380px;margin:40px auto"><h2>Accedi al gestionale</h2>' +
+    '<form onsubmit="faiLogin(event)"><div style="margin-bottom:10px"><label>Nome</label><input id="lgN" autocomplete="username" required></div>' +
+    '<div style="margin-bottom:14px"><label>Password</label><input id="lgP" type="password" autocomplete="current-password" required></div>' +
+    '<button class="btn" style="width:100%">Entra</button></form>' + (msg ? '<div class="avviso" style="margin-top:12px">' + esc(msg) + '</div>' : '') +
+    '<p class="small muted" style="margin-top:12px">L\'accesso resta attivo su questo dispositivo finché non premi "Esci".</p></div>';
+}
+function faiLogin(ev) {
+  ev.preventDefault();
+  var n = $('lgN').value, p = $('lgP').value;
+  API.login(n, p).then(function (r) { Sess.set(r.token); avvia(); }).catch(function (e) { mostraLogin(e && e.message || String(e)); });
+}
+function esci() {
+  API.logout().then(function () { Sess.set(''); if (DEMO) location.reload(); else mostraLogin('Sei uscita dal gestionale.'); });
+}
+function avvia() {
+  if (DEMO) $('demo').style.display = 'block';
+  if (!DEMO && !Sess.get()) { mostraLogin(); return; }
+  API.carica().then(function (d) {
+    D = d; ['Case', 'Prenotazioni', 'Tariffe', 'Spese', 'Calendari', 'EventiOTA', 'Impostazioni'].forEach(function (t) { D[t] = D[t] || []; });
+    D.Case.forEach(function (c) { c.ota = bool(c.ota); });
+    $('utente').innerHTML = esc(d.utente || '') + ' · <a href="#" style="color:#fff" onclick="esci();return false">Esci</a>';
+    var t = new Date(); S.meseCal = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0');
+    S.casaCal = (caseOrd()[0] || {}).id || '';
+    render();
+  }).catch(function (e) { if (String(e && e.message || e).indexOf('SESSIONE_SCADUTA') >= 0) return; $('app').innerHTML = '<div class="card avviso err">Impossibile caricare i dati: ' + esc(e && e.message || e) + '</div>'; });
+}
+function salva(t, rec) {
+  return API.salva(t, rec).then(function (r) {
+    var k = CHIAVI[t], i = D[t].findIndex(function (x) { return x[k] === r[k]; });
+    if (i >= 0) D[t][i] = r; else D[t].push(r);
+    if (t === 'Case') r.ota = bool(r.ota);
+    return r;
+  });
+}
+function elimina(t, id) {
+  return API.elimina(t, id).then(function () { var k = CHIAVI[t]; D[t] = D[t].filter(function (x) { return x[k] !== id; }); });
+}
+
+/* =========================================================
+   VISTA: PANORAMICA
+   ========================================================= */
+function vPanoramica() {
+  var o = oggi(), tra14 = addG(o, 14), anno = o.slice(0, 4);
+  var arrivi = attive().filter(function (p) { return p.checkin >= o && p.checkin <= tra14; }).sort(function (a, b) { return a.checkin < b.checkin ? -1 : 1; });
+  var partenze = attive().filter(function (p) { return p.checkout >= o && p.checkout <= tra14; }).sort(function (a, b) { return a.checkout < b.checkout ? -1 : 1; });
+  var inCasa = attive().filter(function (p) { return p.checkin <= o && p.checkout > o; });
+  var capAttese = attive().filter(function (p) { return !isOtaCanale(p.canale) && num(p.caparra) > 0 && !bool(p.caparraRicevuta) && p.checkout >= o; });
+  var saldi = attive().filter(function (p) { return !isOtaCanale(p.canale) && residuo(p) > 0 && p.checkin <= addG(o, 7) && p.checkout >= addG(o, -30); });
+  var daCompletare = D.EventiOTA.filter(function (e) { return e.fine >= o && !D.Prenotazioni.some(function (p) { return p.otaUid === e.uid; }); });
+  var alloggiati = attive().filter(function (p) { return p.checkin <= o && p.checkin >= addG(o, -30) && !bool(p.alloggiatiInviati); });
+  var opz = attive().filter(function (p) { return p.stato === 'opzione' && p.checkout >= o; });
+  var r = calcolaReport(anno + '-01-01', anno + '-12-31');
+
+  var h = '<div class="bar"><div class="sp"></div><button class="btn" onclick="apriPren()">+ Nuova prenotazione</button></div>';
+  h += '<div class="grid g4">' +
+    kpi('Ospiti in casa oggi', inCasa.length, inCasa.map(function (p) { return esc(casa(p.casaId).nome.split(' ').slice(0, 2).join(' ')); }).join(', ') || '—') +
+    kpi('Arrivi prossimi 14 gg', arrivi.length, partenze.length + ' partenze') +
+    kpi('Incasso netto ' + anno, eur(r.tot.netto), 'occupazione ' + r.tot.occ.toFixed(0) + '%') +
+    kpi('Tassa soggiorno ' + anno, eur2(r.tot.tassa), r.tot.notti + ' notti vendute') + '</div>';
+
+  var promemoria = [];
+  capAttese.forEach(function (p) { promemoria.push(['warn', 'Caparra da ricevere', p, eur(p.caparra)]); });
+  saldi.forEach(function (p) { promemoria.push(['warn', 'Saldo da incassare', p, eur(residuo(p))]); });
+  alloggiati.forEach(function (p) { promemoria.push(['err', 'Alloggiati Web da inviare', p, '']); });
+  opz.forEach(function (p) { promemoria.push(['info', 'Opzione da confermare', p, '']); });
+
+  h += '<div class="grid g2" style="margin-top:16px">';
+  h += '<div class="card"><h2>Arrivi e partenze (prossimi 14 giorni)</h2>' + tabMovimenti(arrivi, partenze) + '</div>';
+  h += '<div class="card"><h2>Promemoria</h2>';
+  if (!promemoria.length && !daCompletare.length) h += '<div class="vuoto">Tutto in ordine ✓</div>';
+  else {
+    h += '<table>';
+    promemoria.forEach(function (x) {
+      h += '<tr class="click" onclick="apriPren(\'' + x[2].id + '\')"><td><span class="tag ' + x[0] + '">' + x[1] + '</span></td><td>' + esc(x[2].ospite) +
+        '<div class="small muted">' + esc(casa(x[2].casaId).nome) + ' · ' + fd(x[2].checkin) + '</div></td><td class="n">' + x[3] + '</td></tr>';
+    });
+    daCompletare.forEach(function (e) {
+      h += '<tr class="click" onclick="daOta(\'' + esc(e.uid) + '\')"><td><span class="tag info">Da completare (' + esc(e.fonte) + ')</span></td><td>' + esc(e.titolo || 'Prenotazione OTA') +
+        '<div class="small muted">' + esc(casa(e.casaId).nome) + ' · ' + fd(e.inizio) + ' → ' + fd(e.fine) + '</div></td><td class="n small muted">aggiungi dati</td></tr>';
+    });
+    h += '</table>';
+  }
+  h += '</div></div>';
+  return h;
+}
+function kpi(l, v, s) { return '<div class="card kpi"><div class="l">' + l + '</div><div class="v">' + v + '</div><div class="s">' + (s || '') + '</div></div>'; }
+function tabMovimenti(arrivi, partenze) {
+  var m = [];
+  arrivi.forEach(function (p) { m.push({ g: p.checkin, t: 'Arrivo', p: p, host: p.hostCheckin }); });
+  partenze.forEach(function (p) { m.push({ g: p.checkout, t: 'Partenza', p: p, host: p.hostCheckout }); });
+  m.sort(function (a, b) { return a.g < b.g ? -1 : a.g > b.g ? 1 : (a.t === 'Partenza' ? -1 : 1); });
+  if (!m.length) return '<div class="vuoto">Nessun movimento</div>';
+  return '<table><tr><th>Data</th><th></th><th>Casa / ospite</th><th>Host</th><th></th></tr>' + m.map(function (x) {
+    var wa = linkWa(x.host, x.p, x.t);
+    return '<tr class="click" onclick="apriPren(\'' + x.p.id + '\')"><td>' + giornoBreve(x.g) + '</td><td><span class="tag ' + (x.t === 'Arrivo' ? 'ok' : 'info') + '">' + x.t + '</span></td>' +
+      '<td><span class="dot" style="background:' + casa(x.p.casaId).colore + '"></span>' + esc(casa(x.p.casaId).nome) + '<div class="small muted">' + esc(x.p.ospite) +
+      ' · ' + (num(x.p.adulti) + num(x.p.bambini)) + ' osp.' + (x.t === 'Arrivo' && x.p.oraArrivo ? ' · ore ' + esc(x.p.oraArrivo) : '') + '</div></td>' +
+      '<td>' + (x.host ? esc(x.host) : '<span class="tag err">da assegnare</span>') + '</td>' +
+      '<td>' + (wa ? '<a class="btn sm sec" href="' + wa + '" target="_blank" onclick="event.stopPropagation()">WhatsApp</a>' : '') + '</td></tr>';
+  }).join('') + '</table>';
+}
+function giornoBreve(g) { var d = dU(g); return GS[(d.getUTCDay() + 6) % 7] + ' ' + fd(g, false); }
+function linkWa(host, p, tipo) {
+  var tel = String(imp('host_' + host) || '').replace(/[^\d+]/g, '');
+  if (!host || !tel) return '';
+  if (tel.charAt(0) !== '+' && tel.slice(0, 2) !== '00') tel = '39' + tel;
+  tel = tel.replace(/^\+|^00/, '');
+  var c = casa(p.casaId);
+  var msg = 'Ciao ' + host + ', ' + (tipo === 'Arrivo' ? 'check-in' : 'check-out') + ' a ' + c.nome + ' ' + giornoBreve(tipo === 'Arrivo' ? p.checkin : p.checkout) +
+    (tipo === 'Arrivo' && p.oraArrivo ? ' ore ' + p.oraArrivo : '') + '. Ospite: ' + p.ospite + ' (' + (num(p.adulti) + num(p.bambini)) + ' persone)' +
+    (p.telefono ? ', tel ' + p.telefono : '') + '.' +
+    (tipo === 'Arrivo' && !isOtaCanale(p.canale) && residuo(p) > 0 ? ' Da incassare: ' + eur(residuo(p)) + '.' : '') +
+    (tipo === 'Arrivo' && tassa(p) > 0 && !bool(p.tassaIncassata) ? ' Tassa soggiorno: ' + eur2(tassa(p)) + '.' : '');
+  return 'https://wa.me/' + tel + '?text=' + encodeURIComponent(msg);
+}
+
+/* =========================================================
+   VISTA: CALENDARIO
+   ========================================================= */
+function vCalendario() {
+  var p = S.meseCal.split('-'), y = +p[0], m = +p[1];
+  var h = '<div class="bar"><button class="btn sec sm" onclick="spostaMese(-1)">◀</button><b style="font-size:16px;min-width:150px;text-align:center">' + MESI[m - 1] + ' ' + y + '</b>' +
+    '<button class="btn sec sm" onclick="spostaMese(1)">▶</button><button class="btn sec sm" onclick="meseOggi()">Oggi</button>' +
+    '<select style="width:auto" onchange="S.modoCal=this.value;render()">' +
+    '<option value="tutte"' + (S.modoCal === 'tutte' ? ' selected' : '') + '>Tutte le case</option>' +
+    caseOrd().map(function (c) { return '<option value="' + c.id + '"' + (S.modoCal === c.id ? ' selected' : '') + '>' + esc(c.nome) + '</option>'; }).join('') + '</select>' +
+    '<div class="sp"></div><button class="btn sec" onclick="sincronizza()">⟳ Sincronizza OTA</button><button class="btn" onclick="apriPren()">+ Prenotazione</button></div>';
+  h += '<div class="card">' + (S.modoCal === 'tutte' ? timeline(y, m) : meseCasa(S.modoCal, y, m)) +
+    '<div class="legenda"><span><span class="dot" style="background:#64748b"></span>Prenotazione</span><span><span class="dot" style="background:repeating-linear-gradient(45deg,#64748b 0 3px,#cbd5e1 3px 6px)"></span>Dal calendario OTA (da completare)</span><span>Tratteggio = opzione non confermata</span>' +
+    '<span class="muted">Clic su un giorno libero per creare una prenotazione</span></div></div>';
+  return h;
+}
+function spostaMese(d) { var p = S.meseCal.split('-'), dt = new Date(Date.UTC(+p[0], +p[1] - 1 + d, 1)); S.meseCal = dt.toISOString().slice(0, 7); render(); }
+function meseOggi() { S.meseCal = oggi().slice(0, 7); render(); }
+function timeline(y, m) {
+  var giorni = new Date(Date.UTC(y, m, 0)).getUTCDate(), inizio = S.meseCal + '-01', fine = addG(inizio, giorni), o = oggi();
+  var cols = '210px repeat(' + giorni + ',1fr)';
+  var h = '<div class="scroll"><div class="tl"><div class="tl-row tl-head" style="grid-template-columns:' + cols + '"><div></div>';
+  for (var i = 0; i < giorni; i++) {
+    var g = addG(inizio, i), dw = (dU(g).getUTCDay() + 6) % 7;
+    h += '<div class="' + (g === o ? 'oggi' : dw >= 5 ? 'we' : '') + '">' + GS[dw].charAt(0) + '<br>' + (i + 1) + '</div>';
+  }
+  h += '</div>';
+  caseOrd().forEach(function (c) {
+    h += '<div class="tl-row" style="grid-template-columns:' + cols + '"><div class="tl-name" style="grid-row:1;grid-column:1"><span class="dot" style="background:' + c.colore + '"></span>' + esc(c.nome) + '</div>';
+    for (var i = 0; i < giorni; i++) {
+      var g = addG(inizio, i), dw = (dU(g).getUTCDay() + 6) % 7;
+      h += '<div class="tl-cell' + (dw >= 5 ? ' we' : '') + '" style="grid-row:1;grid-column:' + (i + 2) + '" onclick="apriPren(null,{casaId:\'' + c.id + '\',checkin:\'' + g + '\'})" title="' + fd(g) + ' · ' + eur(tariffaNotte(c.id, g).prezzo) + '/notte"></div>';
+    }
+    eventiCasa(c.id).forEach(function (ev) {
+      if (ev.fine <= inizio || ev.inizio >= fine) return;
+      var a = Math.max(0, notti(inizio, ev.inizio)), b = Math.min(giorni, notti(inizio, ev.fine));
+      var span = Math.max(1, b - a);
+      var lbl, cls = 'tl-bar', click, tit;
+      if (ev.tipo === 'p') {
+        lbl = esc(ev.p.ospite) + (ev.p.hostCheckin ? ' · ' + esc(ev.p.hostCheckin) : '');
+        if (ev.p.stato === 'opzione') cls += ' opz';
+        click = 'apriPren(\'' + ev.id + '\')';
+        tit = ev.p.ospite + ' · ' + ev.p.canale + ' · ' + fd(ev.inizio) + '→' + fd(ev.fine);
+      } else {
+        lbl = esc(ev.e.fonte) + ' · ' + esc(ev.e.titolo || 'occupato'); cls += ' ota'; click = 'daOta(\'' + esc(ev.id) + '\')';
+        tit = ev.e.fonte + ' (da completare) ' + fd(ev.inizio) + '→' + fd(ev.fine);
+      }
+      h += '<div class="' + cls + '" style="grid-column:' + (a + 2) + ' / span ' + span + ';background-color:' + c.colore + '" onclick="' + click + '" title="' + esc(tit) + '">' + lbl + '</div>';
+    });
+    h += '</div>';
+  });
+  return h + '</div></div>';
+}
+function meseCasa(casaId, y, m) {
+  var c = casa(casaId), primo = S.meseCal + '-01', o = oggi();
+  var off = (dU(primo).getUTCDay() + 6) % 7, start = addG(primo, -off);
+  var ev = eventiCasa(casaId);
+  var h = '<div class="mese">' + GS.map(function (g) { return '<div class="gs">' + g + '</div>'; }).join('');
+  var gm = new Date(Date.UTC(y, m, 0)).getUTCDate(), celle = Math.ceil((off + gm) / 7) * 7;
+  for (var i = 0; i < celle; i++) {
+    var g = addG(start, i), fuori = g.slice(0, 7) !== S.meseCal;
+    var occ = ev.filter(function (x) { return x.inizio <= g && x.fine > g; });
+    var arr = ev.filter(function (x) { return x.fine === g; });
+    h += '<div class="giorno' + (fuori ? ' fuori' : '') + (g === o ? ' oggi' : '') + '" onclick="' + (occ.length ? '' : 'apriPren(null,{casaId:\'' + casaId + '\',checkin:\'' + g + '\'})') + '">' +
+      '<span class="num">' + (+g.slice(8)) + '</span>' + (occ.length ? '' : '<span class="prezzo">' + eur(tariffaNotte(casaId, g).prezzo) + '</span>');
+    arr.forEach(function (x) { h += '<div class="small muted">↗ partenza</div>'; });
+    occ.forEach(function (x) {
+      var lbl = x.tipo === 'p' ? esc(x.p.ospite) : esc(x.e.fonte);
+      var click = x.tipo === 'p' ? 'apriPren(\'' + x.id + '\')' : 'daOta(\'' + esc(x.id) + '\')';
+      h += '<div class="occ" style="background:' + c.colore + (x.tipo === 'o' ? ';background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.2) 0 5px,transparent 5px 10px)' : '') + '" onclick="event.stopPropagation();' + click + '">' +
+        (x.inizio === g ? '↘ ' : '') + lbl + '</div>';
+    });
+    h += '</div>';
+  }
+  return h + '</div>';
+}
+function sincronizza() {
+  toast('Sincronizzazione in corso…');
+  API.sync().then(function (r) { D.EventiOTA = r.EventiOTA; D.Calendari = r.Calendari; render(); toast('Calendari OTA aggiornati'); }).catch(errore);
+}
+
+/* =========================================================
+   MODALE PRENOTAZIONE
+   ========================================================= */
+function apriModale(html) { $('modal').innerHTML = html; $('mbg').classList.add('on'); }
+function chiudiModale() { $('mbg').classList.remove('on'); }
+$('mbg').addEventListener('click', function (e) { if (e.target === $('mbg')) chiudiModale(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') chiudiModale(); });
+
+function daOta(uid) {
+  var e = D.EventiOTA.find(function (x) { return x.uid === uid; }); if (!e) return;
+  apriPren(null, { casaId: e.casaId, checkin: e.inizio, checkout: e.fine, canale: CANALI.indexOf(e.fonte) >= 0 ? e.fonte : 'Altro', otaUid: e.uid, note: e.titolo ? 'Da calendario: ' + e.titolo : '' });
+}
+
+function apriPren(id, preset) {
+  var p = id ? JSON.parse(JSON.stringify(D.Prenotazioni.find(function (x) { return x.id === id; }))) : null;
+  if (!p) {
+    var c = casa((preset && preset.casaId) || S.casaCal || caseOrd()[0].id);
+    var ci = (preset && preset.checkin) || oggi();
+    p = { casaId: c.id, canale: 'Diretto', stato: 'confermata', checkin: ci, checkout: addG(ci, num(c.minNotti) || 3), oraArrivo: '', adulti: 2, bambini: 0, ospitiTassa: 2, esentiTassa: 0,
+      prezzoTotale: '', pulizie: '', commissione: '', caparra: '', caparraRicevuta: false, saldoRicevuto: false, tassaIncassata: false, alloggiatiInviati: false, hostCheckin: '', hostCheckout: '' };
+    for (var k in preset) p[k] = preset[k];
+    if (preset && preset.canale && isOtaCanale(preset.canale)) { /* prezzo da inserire a mano */ }
+    else { var pv = preventivo(p.casaId, p.checkin, p.checkout); p.prezzoTotale = pv.totale; p.pulizie = pv.pulizie; }
+  }
+  var opt = function (lista, v) { return lista.map(function (x) { var val = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<option value="' + esc(val) + '"' + (String(v) === String(val) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join(''); };
+  var hostOpt = [['', '— da assegnare —']].concat(HOST_DEFAULT);
+  var h = '<h3>' + (p.id ? 'Prenotazione · ' + esc(p.ospite || '') : 'Nuova prenotazione') + '</h3><form id="fp" onsubmit="return false" oninput="inputPren(event)" data-nuova="' + (p.id ? '' : '1') + '">' +
+    '<input type="hidden" name="id" value="' + esc(p.id || '') + '"><input type="hidden" name="otaUid" value="' + esc(p.otaUid || '') + '"><input type="hidden" name="creato" value="' + esc(p.creato || '') + '">' +
+    '<div class="f">' +
+    '<div class="w2"><label>Casa</label><select name="casaId">' + opt(caseOrd().map(function (c) { return [c.id, c.nome]; }), p.casaId) + '</select></div>' +
+    '<div><label>Canale</label><select name="canale" onchange="cambiaCanale()">' + opt(CANALI, p.canale) + '</select></div>' +
+    '<div><label>Stato</label><select name="stato">' + opt([['confermata', 'Confermata'], ['opzione', 'Opzione / in attesa'], ['cancellata', 'Cancellata']], p.stato) + '</select></div>' +
+    '<div><label>Check-in</label><input type="date" name="checkin" value="' + esc(p.checkin) + '"></div>' +
+    '<div><label>Check-out</label><input type="date" name="checkout" value="' + esc(p.checkout) + '"></div>' +
+    '<div><label>Orario arrivo</label><input type="time" name="oraArrivo" value="' + esc(p.oraArrivo || '') + '"></div>' +
+    '</div>' +
+    '<div class="sez">Ospiti</div><div class="f">' +
+    '<div class="w2"><label>Nome ospite / referente</label><input name="ospite" value="' + esc(p.ospite || '') + '" required></div>' +
+    '<div><label>Telefono</label><input name="telefono" value="' + esc(p.telefono || '') + '"></div>' +
+    '<div><label>Email</label><input name="email" type="email" value="' + esc(p.email || '') + '"></div>' +
+    '<div><label>Adulti</label><input type="number" min="0" name="adulti" value="' + esc(p.adulti) + '"></div>' +
+    '<div><label>Bambini</label><input type="number" min="0" name="bambini" value="' + esc(p.bambini) + '"></div>' +
+    '<div><label>Ospiti sopra i ' + imp('tassaEta') + ' anni</label><input type="number" min="0" name="ospitiTassa" value="' + esc(p.ospitiTassa) + '"></div>' +
+    '<div><label>di cui esenti tassa</label><input type="number" min="0" name="esentiTassa" value="' + esc(p.esentiTassa || 0) + '"></div>' +
+    '</div>' +
+    '<div class="sez">Accoglienza</div><div class="f">' +
+    '<div><label>Host check-in</label><select name="hostCheckin">' + opt(hostOpt, p.hostCheckin) + '</select></div>' +
+    '<div><label>Host check-out</label><select name="hostCheckout">' + opt(hostOpt, p.hostCheckout) + '</select></div>' +
+    '<div class="chk" style="align-self:end"><input type="checkbox" name="alloggiatiInviati"' + (bool(p.alloggiatiInviati) ? ' checked' : '') + '> Alloggiati Web inviato</div>' +
+    '</div>' +
+    '<div class="sez">Importi</div><div class="f">' +
+    '<div><label>Prezzo totale soggiorno (€)</label><input name="prezzoTotale" inputmode="decimal" value="' + esc(p.prezzoTotale) + '"></div>' +
+    '<div><label>di cui pulizie (€)</label><input name="pulizie" inputmode="decimal" value="' + esc(p.pulizie) + '"></div>' +
+    '<div><label>Commissione OTA (€)</label><input name="commissione" inputmode="decimal" value="' + esc(p.commissione) + '"></div>' +
+    '<div style="align-self:end"><button type="button" class="btn sec sm" onclick="calcolaPrezzo()">Calcola da tariffe</button></div>' +
+    '</div>' +
+    '<div id="boxCaparra"><div class="sez">Caparra e pagamenti</div><div class="f">' +
+    '<div><label>Caparra (€)</label><input name="caparra" inputmode="decimal" value="' + esc(p.caparra || '') + '"></div>' +
+    '<div><label>Data caparra</label><input type="date" name="caparraData" value="' + esc(p.caparraData || '') + '"></div>' +
+    '<div><label>Metodo</label><select name="caparraMetodo">' + opt(['', 'Bonifico', 'PayPal', 'Contanti', 'Carta', 'Satispay', 'Altro'], p.caparraMetodo || '') + '</select></div>' +
+    '<div class="chk" style="align-self:end"><input type="checkbox" name="caparraRicevuta"' + (bool(p.caparraRicevuta) ? ' checked' : '') + '> Caparra ricevuta</div>' +
+    '</div></div>' +
+    '<div class="f" style="margin-top:10px">' +
+    '<div class="chk"><input type="checkbox" name="saldoRicevuto"' + (bool(p.saldoRicevuto) ? ' checked' : '') + '> Saldo ricevuto / pagato dall\'OTA</div>' +
+    '<div class="chk"><input type="checkbox" name="tassaIncassata"' + (bool(p.tassaIncassata) ? ' checked' : '') + '> Tassa di soggiorno incassata</div>' +
+    '</div>' +
+    '<div class="sez">Note</div><textarea name="note">' + esc(p.note || '') + '</textarea>' +
+    '<div id="riep"></div>' +
+    '<div class="bar" style="margin-top:16px">' + (p.id ? '<button type="button" class="btn del" onclick="eliminaPren(\'' + p.id + '\')">Elimina</button>' : '') +
+    '<div class="sp"></div><button type="button" class="btn sec" onclick="chiudiModale()">Annulla</button><button type="button" class="btn" onclick="salvaPren()">Salva</button></div></form>';
+  apriModale(h);
+  cambiaCanale(true); aggiornaRiepilogo();
+}
+function leggiForm(id) {
+  var f = $(id), o = {};
+  Array.prototype.forEach.call(f.elements, function (el) { if (!el.name) return; o[el.name] = el.type === 'checkbox' ? el.checked : el.value; });
+  return o;
+}
+function inputPren(ev) {
+  var f = $('fp'), n = ev.target.name;
+  if (n === 'prezzoTotale') { f.dataset.prezzoManuale = '1'; if (f.prezzoTotale.value) f.commissione.value = commDefault(f.canale.value, f.prezzoTotale.value); }
+  if (n === 'ospitiTassa') f.dataset.tassaManuale = '1';
+  if (n === 'adulti' && !f.dataset.tassaManuale) f.ospitiTassa.value = f.adulti.value;
+  if ((n === 'checkin' || n === 'checkout' || n === 'casaId') && f.dataset.nuova && !f.dataset.prezzoManuale && !isOtaCanale(f.canale.value)) {
+    if (n === 'checkin' && f.checkout.value <= f.checkin.value) f.checkout.value = addG(f.checkin.value, num(casa(f.casaId.value).minNotti) || 3);
+    if (f.checkin.value && f.checkout.value > f.checkin.value) calcolaPrezzo();
+  }
+  aggiornaRiepilogo();
+}
+function cambiaCanale(iniziale) {
+  var f = $('fp'), can = f.canale.value;
+  $('boxCaparra').style.display = isOtaCanale(can) ? 'none' : '';
+  if (!iniziale && f.prezzoTotale.value) f.commissione.value = commDefault(can, f.prezzoTotale.value);
+  aggiornaRiepilogo();
+}
+function calcolaPrezzo() {
+  var f = $('fp'), pv = preventivo(f.casaId.value, f.checkin.value, f.checkout.value);
+  f.prezzoTotale.value = pv.totale; f.pulizie.value = pv.pulizie; f.commissione.value = commDefault(f.canale.value, pv.totale);
+  aggiornaRiepilogo();
+}
+function aggiornaRiepilogo() {
+  var p = leggiForm('fp'), box = $('riep'); if (!box) return;
+  if (!p.checkin || !p.checkout || p.checkout <= p.checkin) { box.innerHTML = '<div class="avviso err">Il check-out deve essere successivo al check-in.</div>'; return; }
+  var n = notti(p.checkin, p.checkout), pv = preventivo(p.casaId, p.checkin, p.checkout), t = tassa(p), nt = notteTassabili(p).length;
+  var h = '<div class="riepilogo"><div>Notti<b>' + n + '</b></div><div>Netto per te<b>' + eur2(netto(p)) + '</b></div>' +
+    '<div>Media a notte<b>' + eur2((num(p.prezzoTotale) - num(p.pulizie)) / n) + '</b></div>' +
+    '<div>Tassa soggiorno<b>' + eur2(t) + '</b><span class="small muted">' + personeTassa(p) + ' pers. × ' + nt + ' notti × ' + eur2(imp('tassaImporto')) + '</span></div>' +
+    (isOtaCanale(p.canale) ? '' : '<div>Da incassare<b>' + eur2(residuo(p)) + '</b></div>') +
+    '<div>Prezzo da listino<b>' + eur(pv.totale) + '</b></div></div>';
+  var c = conflitti(p.casaId, p.checkin, p.checkout, p.id, p.otaUid);
+  if (c.length && p.stato !== 'cancellata') h += '<div class="avviso err">⚠ Sovrapposizione con: ' + c.map(function (x) { return x.tipo === 'p' ? esc(x.p.ospite) + ' (' + fd(x.inizio) + '→' + fd(x.fine) + ')' : esc(x.e.fonte) + ' (' + fd(x.inizio) + '→' + fd(x.fine) + ')'; }).join(', ') + '</div>';
+  if (pv.minNotti && n < pv.minNotti) h += '<div class="avviso">Soggiorno minimo previsto in questo periodo: ' + pv.minNotti + ' notti.</div>';
+  var tot = num(p.adulti) + num(p.bambini), max = num(casa(p.casaId).ospitiMax);
+  if (max && tot > max) h += '<div class="avviso">Ospiti (' + tot + ') oltre la capienza della casa (' + max + ').</div>';
+  if (num(p.ospitiTassa) > tot) h += '<div class="avviso">Gli ospiti sopra i ' + imp('tassaEta') + ' anni superano il totale ospiti.</div>';
+  box.innerHTML = h;
+}
+function salvaPren() {
+  var p = leggiForm('fp');
+  if (!p.ospite.trim()) { toast('Inserisci il nome dell\'ospite'); return; }
+  if (!p.checkin || !p.checkout || p.checkout <= p.checkin) { toast('Controlla le date'); return; }
+  var c = conflitti(p.casaId, p.checkin, p.checkout, p.id, p.otaUid);
+  if (c.length && p.stato !== 'cancellata' && !confirm('Le date si sovrappongono a un\'altra prenotazione. Salvare comunque?')) return;
+  ['adulti', 'bambini', 'ospitiTassa', 'esentiTassa', 'prezzoTotale', 'pulizie', 'commissione', 'caparra'].forEach(function (k) { p[k] = num(p[k]); });
+  if (isOtaCanale(p.canale)) { p.caparra = 0; p.caparraData = ''; p.caparraMetodo = ''; p.caparraRicevuta = false; }
+  salva('Prenotazioni', p).then(function () { chiudiModale(); render(); toast('Prenotazione salvata'); }).catch(errore);
+}
+function eliminaPren(id) {
+  if (!confirm('Eliminare definitivamente questa prenotazione? (Se è stata disdetta puoi anche impostare lo stato "Cancellata")')) return;
+  elimina('Prenotazioni', id).then(function () { chiudiModale(); render(); toast('Eliminata'); }).catch(errore);
+}
+
+/* =========================================================
+   VISTA: PRENOTAZIONI
+   ========================================================= */
+function vPrenotazioni() {
+  var F = S.filtri, anno = F.anno || oggi().slice(0, 4);
+  var lista = D.Prenotazioni.filter(function (p) {
+    if (F.casa && p.casaId !== F.casa) return false;
+    if (F.canale && p.canale !== F.canale) return false;
+    if (F.host && p.hostCheckin !== F.host && p.hostCheckout !== F.host) return false;
+    if (F.stato && p.stato !== F.stato) return false;
+    if (anno !== 'tutti' && p.checkin.slice(0, 4) !== anno && p.checkout.slice(0, 4) !== anno) return false;
+    if (F.q && (p.ospite + ' ' + p.telefono + ' ' + p.email + ' ' + p.note).toLowerCase().indexOf(F.q.toLowerCase()) < 0) return false;
+    return true;
+  }).sort(function (a, b) { return a.checkin < b.checkin ? -1 : 1; });
+  var anni = annoLista();
+  var sel = function (k, lista, tutti) { return '<select style="width:auto" onchange="S.filtri.' + k + '=this.value;render()"><option value="">' + tutti + '</option>' + lista.map(function (x) { var v = Array.isArray(x) ? x[0] : x, l = Array.isArray(x) ? x[1] : x; return '<option value="' + esc(v) + '"' + (F[k] === v ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join('') + '</select>'; };
+  var h = '<div class="bar">' +
+    '<select style="width:auto" onchange="S.filtri.anno=this.value;render()">' + anni.concat(['tutti']).map(function (a) { return '<option' + (a === anno ? ' selected' : '') + '>' + a + '</option>'; }).join('') + '</select>' +
+    sel('casa', caseOrd().map(function (c) { return [c.id, c.nome]; }), 'Tutte le case') + sel('canale', CANALI, 'Tutti i canali') + sel('host', HOST_DEFAULT, 'Tutti gli host') +
+    sel('stato', [['confermata', 'Confermate'], ['opzione', 'Opzioni'], ['cancellata', 'Cancellate']], 'Tutti gli stati') +
+    '<input style="width:180px" placeholder="Cerca ospite…" value="' + esc(F.q || '') + '" onchange="S.filtri.q=this.value;render()">' +
+    '<div class="sp"></div><button class="btn sec" onclick="esportaCsv()">Esporta CSV</button><button class="btn" onclick="apriPren()">+ Nuova</button></div>';
+  h += '<div class="card scroll"><table><tr><th>Casa</th><th>Ospite</th><th>Date</th><th>Canale</th><th>Host</th><th class="n">Totale</th><th class="n">Netto</th><th>Caparra</th><th class="n">Residuo</th><th class="n">Tassa</th><th>Stato</th></tr>';
+  var tot = { t: 0, n: 0, r: 0, x: 0 };
+  lista.forEach(function (p) {
+    var ota = isOtaCanale(p.canale), canc = p.stato === 'cancellata';
+    if (!canc) { tot.t += num(p.prezzoTotale); tot.n += netto(p); tot.r += ota ? 0 : residuo(p); tot.x += tassa(p); }
+    h += '<tr class="click" onclick="apriPren(\'' + p.id + '\')"' + (canc ? ' style="opacity:.5;text-decoration:line-through"' : '') + '>' +
+      '<td><span class="dot" style="background:' + casa(p.casaId).colore + '"></span>' + esc(casa(p.casaId).nome) + '</td>' +
+      '<td>' + esc(p.ospite) + '<div class="small muted">' + (num(p.adulti) + num(p.bambini)) + ' ospiti' + (p.telefono ? ' · ' + esc(p.telefono) : '') + '</div></td>' +
+      '<td>' + fd(p.checkin) + ' → ' + fd(p.checkout) + '<div class="small muted">' + notti(p.checkin, p.checkout) + ' notti</div></td>' +
+      '<td>' + esc(p.canale) + '</td><td>' + (esc(p.hostCheckin) || '<span class="tag err">—</span>') + '</td>' +
+      '<td class="n">' + eur(p.prezzoTotale) + '</td><td class="n">' + eur(netto(p)) + '</td>' +
+      '<td>' + (ota ? '<span class="muted small">OTA</span>' : num(p.caparra) ? eur(p.caparra) + ' ' + (bool(p.caparraRicevuta) ? '<span class="tag ok">ricevuta</span>' : '<span class="tag warn">attesa</span>') : '<span class="muted">—</span>') + '</td>' +
+      '<td class="n">' + (ota ? '<span class="muted">—</span>' : residuo(p) ? eur(residuo(p)) : '<span class="tag ok">saldato</span>') + '</td>' +
+      '<td class="n">' + eur2(tassa(p)) + (tassa(p) && !bool(p.tassaIncassata) && !canc ? ' <span class="tag warn">!</span>' : '') + '</td>' +
+      '<td>' + statoTag(p.stato) + '</td></tr>';
+  });
+  if (!lista.length) h += '<tr><td colspan="11" class="vuoto">Nessuna prenotazione con questi filtri</td></tr>';
+  else h += '<tfoot><tr><td colspan="5">' + lista.length + ' prenotazioni</td><td class="n">' + eur(tot.t) + '</td><td class="n">' + eur(tot.n) + '</td><td></td><td class="n">' + eur(tot.r) + '</td><td class="n">' + eur2(tot.x) + '</td><td></td></tr></tfoot>';
+  return h + '</table></div>';
+}
+function statoTag(s) { return s === 'confermata' ? '<span class="tag ok">Confermata</span>' : s === 'opzione' ? '<span class="tag warn">Opzione</span>' : '<span class="tag err">Cancellata</span>'; }
+function annoLista() {
+  var s = {}; s[oggi().slice(0, 4)] = 1;
+  D.Prenotazioni.forEach(function (p) { s[p.checkin.slice(0, 4)] = 1; });
+  return Object.keys(s).sort().reverse();
+}
+function esportaCsv() {
+  var col = ['casa', 'ospite', 'telefono', 'email', 'canale', 'stato', 'checkin', 'checkout', 'notti', 'adulti', 'bambini', 'ospitiTassa', 'prezzoTotale', 'pulizie', 'commissione', 'netto', 'caparra', 'caparraRicevuta', 'residuo', 'tassa', 'tassaIncassata', 'hostCheckin', 'hostCheckout', 'note'];
+  var righe = [col.join(';')].concat(D.Prenotazioni.map(function (p) {
+    var o = Object.assign({}, p, { casa: casa(p.casaId).nome, notti: notti(p.checkin, p.checkout), netto: netto(p), residuo: residuo(p), tassa: tassa(p) });
+    return col.map(function (k) { var v = o[k]; if (typeof v === 'number') v = String(v).replace('.', ','); return '"' + String(v === undefined ? '' : v).replace(/"/g, '""') + '"'; }).join(';');
+  }));
+  var b = new Blob(['﻿' + righe.join('\n')], { type: 'text/csv;charset=utf-8' }), a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = 'prenotazioni-noli.csv'; a.click();
+}
+
+/* =========================================================
+   VISTA: GUADAGNI
+   Ricavi ripartiti per notte: una prenotazione a cavallo di due mesi
+   viene attribuita pro-quota a ciascun mese.
+   ========================================================= */
+function calcolaReport(dal, al) {
+  var giorniPer = notti(dal, addG(al, 1));
+  var per = {}, mesi = {};
+  caseOrd().forEach(function (c) { per[c.id] = { notti: 0, lordo: 0, comm: 0, netto: 0, pul: 0, tassa: 0, spese: 0, pren: 0 }; });
+  attive().filter(function (p) { return p.stato === 'confermata'; }).forEach(function (p) {
+    var n = notti(p.checkin, p.checkout); if (n <= 0 || !per[p.casaId]) return;
+    var r = per[p.casaId], dentro = 0, tass = notteTassabili(p), unitT = personeTassa(p) * num(imp('tassaImporto'));
+    for (var i = 0; i < n; i++) {
+      var g = addG(p.checkin, i); if (g < dal || g > al) continue;
+      dentro++;
+      var m = g.slice(0, 7); mesi[m] = mesi[m] || {}; mesi[m][p.casaId] = (mesi[m][p.casaId] || 0) + netto(p) / n;
+      if (tass.indexOf(g) >= 0) r.tassa += unitT;
+    }
+    if (!dentro) return;
+    var q = dentro / n;
+    r.notti += dentro; r.lordo += num(p.prezzoTotale) * q; r.comm += num(p.commissione) * q; r.netto += netto(p) * q; r.pul += num(p.pulizie) * q;
+    if (p.checkin >= dal && p.checkin <= al) r.pren++;
+  });
+  var speseComuni = 0;
+  D.Spese.forEach(function (s) {
+    if (s.data < dal || s.data > al) return;
+    if (s.casaId && per[s.casaId]) per[s.casaId].spese += num(s.importo); else speseComuni += num(s.importo);
+  });
+  var tot = { notti: 0, lordo: 0, comm: 0, netto: 0, pul: 0, tassa: 0, spese: speseComuni, pren: 0 };
+  Object.keys(per).forEach(function (k) { var r = per[k]; for (var x in tot) tot[x] += r[x]; r.occ = 100 * r.notti / giorniPer; r.adr = r.notti ? (r.lordo - r.pul) / r.notti : 0; r.utile = r.netto - r.spese; });
+  tot.occ = 100 * tot.notti / (giorniPer * Math.max(1, caseOrd().length)); tot.adr = tot.notti ? (tot.lordo - tot.pul) / tot.notti : 0; tot.utile = tot.netto - tot.spese;
+  return { per: per, tot: tot, mesi: mesi, speseComuni: speseComuni, dal: dal, al: al };
+}
+function periodoDa(sel) {
+  var y = oggi().slice(0, 4);
+  if (!sel) sel = 'anno:' + y;
+  var p = sel.split(':');
+  if (p[0] === 'anno') return [p[1] + '-01-01', p[1] + '-12-31'];
+  if (p[0] === 'estate') return [p[1] + '-06-01', p[1] + '-09-30'];
+  if (p[0] === 'mese') { var u = new Date(Date.UTC(+p[1].slice(0, 4), +p[1].slice(5, 7), 0)).toISOString().slice(0, 10); return [p[1] + '-01', u]; }
+  if (p[0] === 'custom') return [S.repDal || y + '-01-01', S.repAl || y + '-12-31'];
+}
+function vGuadagni() {
+  var sel = S.repSel || 'anno:' + oggi().slice(0, 4), pr = periodoDa(sel), r = calcolaReport(pr[0], pr[1]);
+  S.report = r;
+  var opz = [];
+  annoLista().forEach(function (a) {
+    opz.push(['anno:' + a, 'Anno ' + a], ['estate:' + a, 'Estate ' + a + ' (giu–set)']);
+    for (var m = 1; m <= 12; m++) opz.push(['mese:' + a + '-' + String(m).padStart(2, '0'), MESI[m - 1] + ' ' + a]);
+  });
+  opz.push(['custom', 'Periodo personalizzato…']);
+  var h = '<div class="bar"><select style="width:auto" onchange="S.repSel=this.value;render()">' + opz.map(function (o) { return '<option value="' + o[0] + '"' + (o[0] === sel ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select>';
+  if (sel === 'custom') h += '<input type="date" style="width:auto" value="' + pr[0] + '" onchange="S.repDal=this.value;render()"> → <input type="date" style="width:auto" value="' + pr[1] + '" onchange="S.repAl=this.value;render()">';
+  h += '<div class="sp"></div><span class="muted small">Ricavi attribuiti per notte · solo prenotazioni confermate</span></div>';
+  h += '<div class="grid g4">' + kpi('Incasso lordo', eur(r.tot.lordo), r.tot.pren + ' arrivi nel periodo') + kpi('Commissioni OTA', eur(r.tot.comm), '') +
+    kpi('Netto', eur(r.tot.netto), 'spese ' + eur(r.tot.spese)) + kpi('Utile', eur(r.tot.utile), 'occupazione media ' + r.tot.occ.toFixed(0) + '%') + '</div>';
+  h += '<div class="card scroll" style="margin-top:16px"><h2>Per casa · ' + fd(pr[0]) + ' – ' + fd(pr[1]) + '</h2><table><tr><th>Casa</th><th class="n">Notti</th><th class="n">Occupaz.</th><th class="n">Prezzo medio/notte</th><th class="n">Lordo</th><th class="n">Commissioni</th><th class="n">Netto</th><th class="n">Spese</th><th class="n">Utile</th><th class="n">Tassa sogg.</th></tr>';
+  caseOrd().forEach(function (c) {
+    var x = r.per[c.id];
+    h += '<tr><td><span class="dot" style="background:' + c.colore + '"></span>' + esc(c.nome) + '</td><td class="n">' + x.notti + '</td><td class="n">' + x.occ.toFixed(0) + '%</td><td class="n">' + eur(x.adr) + '</td><td class="n">' + eur(x.lordo) + '</td><td class="n">' + eur(x.comm) + '</td><td class="n">' + eur(x.netto) + '</td><td class="n">' + eur(x.spese) + '</td><td class="n"><b>' + eur(x.utile) + '</b></td><td class="n">' + eur2(x.tassa) + '</td></tr>';
+  });
+  if (r.speseComuni) h += '<tr><td class="muted">Spese comuni (non assegnate a una casa)</td><td colspan="6"></td><td class="n">' + eur(r.speseComuni) + '</td><td class="n">−' + eur(r.speseComuni) + '</td><td></td></tr>';
+  h += '<tfoot><tr><td>Totale</td><td class="n">' + r.tot.notti + '</td><td class="n">' + r.tot.occ.toFixed(0) + '%</td><td class="n">' + eur(r.tot.adr) + '</td><td class="n">' + eur(r.tot.lordo) + '</td><td class="n">' + eur(r.tot.comm) + '</td><td class="n">' + eur(r.tot.netto) + '</td><td class="n">' + eur(r.tot.spese) + '</td><td class="n">' + eur(r.tot.utile) + '</td><td class="n">' + eur2(r.tot.tassa) + '</td></tr></tfoot></table></div>';
+  h += '<div class="card chart"><h2>Netto per mese</h2><div id="grafico"></div><div class="legenda">' + caseOrd().map(function (c) { return '<span><span class="dot" style="background:' + c.colore + '"></span>' + esc(c.nome) + '</span>'; }).join('') + '</div></div>';
+  return h;
+}
+function disegnaGrafico() {
+  var r = S.report, el = $('grafico'); if (!el) return;
+  var mesi = [], d = r.dal.slice(0, 7);
+  while (d <= r.al.slice(0, 7) && mesi.length < 36) { mesi.push(d); var dt = new Date(Date.UTC(+d.slice(0, 4), +d.slice(5, 7), 1)); d = dt.toISOString().slice(0, 7); }
+  var cs = caseOrd(), max = 0;
+  mesi.forEach(function (m) { var s = 0; cs.forEach(function (c) { s += (r.mesi[m] || {})[c.id] || 0; }); max = Math.max(max, s); });
+  if (!max) { el.innerHTML = '<div class="vuoto">Nessun incasso nel periodo</div>'; return; }
+  var W = 900, H = 260, L = 56, B = 26, T = 10, bw = (W - L - 10) / mesi.length;
+  var step = Math.pow(10, Math.floor(Math.log10(max))), top = Math.ceil(max / step) * step; if (top / step < 3) { step /= 2; }
+  var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" font-size="11" font-family="inherit">';
+  for (var v = 0; v <= top + 1e-6; v += step) {
+    var y = H - B - (H - B - T) * v / top;
+    s += '<line x1="' + L + '" x2="' + (W - 10) + '" y1="' + y + '" y2="' + y + '" stroke="#e6dfd1"/><text x="' + (L - 6) + '" y="' + (y + 4) + '" text-anchor="end" fill="#6b7280">' + eur(v) + '</text>';
+  }
+  mesi.forEach(function (m, i) {
+    var x = L + i * bw + bw * 0.18, w = bw * 0.64, acc = 0, tot = 0;
+    cs.forEach(function (c) {
+      var v = (r.mesi[m] || {})[c.id] || 0; if (!v) return;
+      var h = (H - B - T) * v / top, y = H - B - (H - B - T) * (acc + v) / top;
+      s += '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + Math.max(0, h - 1) + '" fill="' + c.colore + '" rx="2"><title>' + esc(c.nome) + ' · ' + MESI[+m.slice(5) - 1] + ': ' + eur(v) + '</title></rect>';
+      acc += v; tot += v;
+    });
+    s += '<text x="' + (x + w / 2) + '" y="' + (H - 8) + '" text-anchor="middle" fill="#6b7280">' + MESI[+m.slice(5) - 1].slice(0, 3) + (mesi.length > 12 ? " '" + m.slice(2, 4) : '') + '</text>';
+    if (tot) s += '<text x="' + (x + w / 2) + '" y="' + (H - B - (H - B - T) * tot / top - 4) + '" text-anchor="middle" fill="#1f2933" font-weight="600">' + (tot >= 1000 ? (tot / 1000).toFixed(1).replace('.', ',') + 'k' : Math.round(tot)) + '</text>';
+  });
+  el.innerHTML = s + '</svg>';
+}
+
+/* =========================================================
+   VISTA: TASSA DI SOGGIORNO
+   ========================================================= */
+function vTassa() {
+  var anno = S.tassaAnno || oggi().slice(0, 4);
+  var mesiT = String(imp('tassaMesi')).split(',').map(function (x) { return parseInt(x, 10); });
+  var tab = {}, righe = [];
+  attive().filter(function (p) { return p.stato === 'confermata'; }).forEach(function (p) {
+    var nt = notteTassabili(p).filter(function (g) { return g.slice(0, 4) === anno; });
+    if (!nt.length || !personeTassa(p)) return;
+    var u = personeTassa(p) * num(imp('tassaImporto'));
+    nt.forEach(function (g) { var m = +g.slice(5, 7); tab[m] = tab[m] || {}; tab[m][p.casaId] = (tab[m][p.casaId] || 0) + u; });
+    righe.push(p);
+  });
+  var h = '<div class="bar"><select style="width:auto" onchange="S.tassaAnno=this.value;render()">' + annoLista().map(function (a) { return '<option' + (a === anno ? ' selected' : '') + '>' + a + '</option>'; }).join('') + '</select>' +
+    '<span class="muted">Regola attuale: ' + eur2(imp('tassaImporto')) + ' a notte per persona sopra i ' + imp('tassaEta') + ' anni, massimo ' + imp('tassaMaxNotti') + ' notti consecutive, mesi ' + mesiT.map(function (m) { return MESI[m - 1].slice(0, 3); }).join(', ') + ' (modificabile in Impostazioni)</span></div>';
+  var cs = caseOrd(), totCol = {}, totale = 0;
+  h += '<div class="card scroll"><h2>Riepilogo per mese ' + anno + '</h2><table><tr><th>Mese</th>' + cs.map(function (c) { return '<th class="n">' + esc(c.nome) + '</th>'; }).join('') + '<th class="n">Totale</th></tr>';
+  mesiT.forEach(function (m) {
+    var t = 0; h += '<tr><td>' + MESI[m - 1] + '</td>';
+    cs.forEach(function (c) { var v = (tab[m] || {})[c.id] || 0; t += v; totCol[c.id] = (totCol[c.id] || 0) + v; h += '<td class="n">' + (v ? eur2(v) : '<span class="muted">—</span>') + '</td>'; });
+    totale += t; h += '<td class="n"><b>' + eur2(t) + '</b></td></tr>';
+  });
+  h += '<tfoot><tr><td>Totale</td>' + cs.map(function (c) { return '<td class="n">' + eur2(totCol[c.id] || 0) + '</td>'; }).join('') + '<td class="n">' + eur2(totale) + '</td></tr></tfoot></table></div>';
+  righe.sort(function (a, b) { return a.checkin < b.checkin ? -1 : 1; });
+  var daInc = righe.filter(function (p) { return !bool(p.tassaIncassata); }).reduce(function (s, p) { return s + tassa(p); }, 0);
+  h += '<div class="card scroll"><h2>Dettaglio per soggiorno <span class="muted small" style="font-weight:400">· ancora da incassare: ' + eur2(daInc) + '</span></h2><table><tr><th>Casa</th><th>Ospite</th><th>Date</th><th class="n">Persone tassabili</th><th class="n">Notti tassate</th><th class="n">Importo</th><th>Incassata</th></tr>';
+  righe.forEach(function (p) {
+    h += '<tr><td><span class="dot" style="background:' + casa(p.casaId).colore + '"></span>' + esc(casa(p.casaId).nome) + '</td><td>' + esc(p.ospite) + '</td><td>' + fd(p.checkin) + ' → ' + fd(p.checkout) + '</td><td class="n">' + personeTassa(p) + (num(p.esentiTassa) ? ' <span class="muted small">(' + p.esentiTassa + ' esenti)</span>' : '') + '</td><td class="n">' + notteTassabili(p).length + '</td><td class="n">' + eur2(tassa(p)) + '</td>' +
+      '<td><label class="chk"><input type="checkbox"' + (bool(p.tassaIncassata) ? ' checked' : '') + ' onchange="segnaTassa(\'' + p.id + '\',this.checked)"> ' + (bool(p.tassaIncassata) ? 'sì' : 'no') + '</label></td></tr>';
+  });
+  if (!righe.length) h += '<tr><td colspan="7" class="vuoto">Nessun soggiorno tassabile nell\'anno</td></tr>';
+  return h + '</table></div>';
+}
+function segnaTassa(id, v) {
+  var p = Object.assign({}, D.Prenotazioni.find(function (x) { return x.id === id; }), { tassaIncassata: v });
+  salva('Prenotazioni', p).then(function () { render(); }).catch(errore);
+}
+
+/* =========================================================
+   VISTA: TARIFFE
+   ========================================================= */
+function vTariffe() {
+  var h = '<div class="card"><h2>Tariffe base per casa</h2><p class="muted small" style="margin-top:-6px">Usate quando un giorno non rientra in nessun periodo stagionale.</p><div class="scroll"><table><tr><th>Casa</th><th class="n">Prezzo/notte</th><th class="n">Pulizie finali</th><th class="n">Notti minime</th><th class="n">Ospiti max</th><th></th></tr>';
+  caseOrd().forEach(function (c) {
+    h += '<tr><td><span class="dot" style="background:' + c.colore + '"></span>' + esc(c.nome) + '</td>' +
+      '<td class="n"><input style="width:90px;text-align:right" value="' + esc(c.tariffaBase) + '" onchange="aggCasa(\'' + c.id + '\',\'tariffaBase\',this.value)"></td>' +
+      '<td class="n"><input style="width:90px;text-align:right" value="' + esc(c.pulizie) + '" onchange="aggCasa(\'' + c.id + '\',\'pulizie\',this.value)"></td>' +
+      '<td class="n"><input style="width:70px;text-align:right" value="' + esc(c.minNotti) + '" onchange="aggCasa(\'' + c.id + '\',\'minNotti\',this.value)"></td>' +
+      '<td class="n"><input style="width:70px;text-align:right" value="' + esc(c.ospitiMax) + '" onchange="aggCasa(\'' + c.id + '\',\'ospitiMax\',this.value)"></td><td></td></tr>';
+  });
+  h += '</table></div></div>';
+  h += '<div class="card"><div class="bar"><h2 style="margin:0">Periodi stagionali</h2><div class="sp"></div><button class="btn" onclick="apriTariffa()">+ Periodo</button><button class="btn sec" onclick="copiaTariffeAnno()">Copia sull\'anno successivo</button></div>' +
+    '<p class="muted small" style="margin-top:-4px">Se due periodi si sovrappongono vale quello più breve (es. Ferragosto dentro l\'alta stagione).</p><div class="scroll"><table><tr><th>Casa</th><th>Periodo</th><th>Dal</th><th>Al</th><th class="n">Prezzo/notte</th><th class="n">Notti min.</th></tr>';
+  var t = D.Tariffe.slice().sort(function (a, b) { return (casa(a.casaId).ordine - casa(b.casaId).ordine) || (a.dal < b.dal ? -1 : 1); });
+  t.forEach(function (x) {
+    h += '<tr class="click" onclick="apriTariffa(\'' + x.id + '\')"><td><span class="dot" style="background:' + casa(x.casaId).colore + '"></span>' + esc(casa(x.casaId).nome) + '</td><td>' + esc(x.nome) + '</td><td>' + fd(x.dal) + '</td><td>' + fd(x.al) + '</td><td class="n">' + eur(x.prezzoNotte) + '</td><td class="n">' + esc(x.minNotti) + '</td></tr>';
+  });
+  if (!t.length) h += '<tr><td colspan="6" class="vuoto">Nessun periodo stagionale</td></tr>';
+  h += '</table></div></div>';
+  h += '<div class="card"><h2>Calcola un preventivo</h2><div class="f" id="fprev" oninput="calcPrev()"><div class="w2"><label>Casa</label><select name="c">' + caseOrd().map(function (c) { return '<option value="' + c.id + '">' + esc(c.nome) + '</option>'; }).join('') + '</select></div>' +
+    '<div><label>Check-in</label><input type="date" name="a" value="' + addG(oggi(), 30) + '"></div><div><label>Check-out</label><input type="date" name="b" value="' + addG(oggi(), 37) + '"></div></div><div id="outprev"></div></div>';
+  setTimeout(calcPrev, 0);
+  return h;
+}
+function calcPrev() {
+  var f = $('fprev'); if (!f) return;
+  var g = function (n) { return f.querySelector('[name=' + n + ']').value; };
+  var c = g('c'), a = g('a'), b = g('b'), o = $('outprev');
+  if (!a || !b || b <= a) { o.innerHTML = ''; return; }
+  var pv = preventivo(c, a, b), cf = conflitti(c, a, b);
+  o.innerHTML = '<div class="riepilogo"><div>Notti<b>' + pv.notti + '</b></div><div>Soggiorno<b>' + eur(pv.soggiorno) + '</b></div><div>Pulizie<b>' + eur(pv.pulizie) + '</b></div><div>Totale<b>' + eur(pv.totale) + '</b></div>' +
+    '<div>Tassa (2 adulti)<b>' + eur2(tassa({ checkin: a, checkout: b, ospitiTassa: 2, esentiTassa: 0 })) + '</b></div></div>' +
+    (cf.length ? '<div class="avviso err">Casa non disponibile in queste date</div>' : '<div class="avviso" style="background:#dcfce7;color:#14532d">Casa libera ✓' + (pv.minNotti > pv.notti ? ' · attenzione: minimo ' + pv.minNotti + ' notti' : '') + '</div>');
+}
+function aggCasa(id, k, v) { var c = Object.assign({}, casa(id)); c[k] = num(v); salva('Case', c).then(function () { toast('Salvato'); }).catch(errore); }
+function apriTariffa(id) {
+  var t = id ? D.Tariffe.find(function (x) { return x.id === id; }) : { casaId: caseOrd()[0].id, nome: 'Alta stagione', dal: '', al: '', prezzoNotte: '', minNotti: 3 };
+  apriModale('<h3>' + (id ? 'Modifica periodo' : 'Nuovo periodo tariffario') + '</h3><form id="ft" onsubmit="return false"><input type="hidden" name="id" value="' + esc(t.id || '') + '"><div class="f">' +
+    '<div class="w2"><label>Casa</label><select name="casaId">' + caseOrd().map(function (c) { return '<option value="' + c.id + '"' + (c.id === t.casaId ? ' selected' : '') + '>' + esc(c.nome) + '</option>'; }).join('') + '</select></div>' +
+    '<div class="w2"><label>Nome periodo</label><input name="nome" value="' + esc(t.nome) + '"></div>' +
+    '<div><label>Dal</label><input type="date" name="dal" value="' + esc(t.dal) + '"></div><div><label>Al (incluso)</label><input type="date" name="al" value="' + esc(t.al) + '"></div>' +
+    '<div><label>Prezzo a notte (€)</label><input name="prezzoNotte" inputmode="decimal" value="' + esc(t.prezzoNotte) + '"></div><div><label>Notti minime</label><input type="number" name="minNotti" value="' + esc(t.minNotti) + '"></div>' +
+    (!id ? '<div class="w2 chk"><input type="checkbox" name="tutte"> Applica a tutte le case</div>' : '') +
+    '</div><div class="bar" style="margin-top:16px">' + (id ? '<button class="btn del" onclick="elimina(\'Tariffe\',\'' + id + '\').then(function(){chiudiModale();render()})">Elimina</button>' : '') +
+    '<div class="sp"></div><button class="btn sec" onclick="chiudiModale()">Annulla</button><button class="btn" onclick="salvaTariffa()">Salva</button></div></form>');
+}
+function salvaTariffa() {
+  var t = leggiForm('ft');
+  if (!t.dal || !t.al || t.al < t.dal || !num(t.prezzoNotte)) { toast('Controlla date e prezzo'); return; }
+  t.prezzoNotte = num(t.prezzoNotte); t.minNotti = num(t.minNotti);
+  var tutte = t.tutte; delete t.tutte;
+  var lista = tutte ? caseOrd().map(function (c) { return Object.assign({}, t, { id: '', casaId: c.id }); }) : [t];
+  lista.reduce(function (pr, x) { return pr.then(function () { return salva('Tariffe', x); }); }, Promise.resolve())
+    .then(function () { chiudiModale(); render(); toast('Tariffa salvata'); }).catch(errore);
+}
+function copiaTariffeAnno() {
+  var anni = D.Tariffe.map(function (t) { return t.dal.slice(0, 4); }).sort(); if (!anni.length) return;
+  var da = anni[anni.length - 1], a = String(+da + 1);
+  if (!confirm('Copiare i periodi del ' + da + ' sul ' + a + ' (stesse date e prezzi)?')) return;
+  var lista = D.Tariffe.filter(function (t) { return t.dal.slice(0, 4) === da; }).map(function (t) { return Object.assign({}, t, { id: '', dal: a + t.dal.slice(4), al: (+t.al.slice(0, 4) + 1) + t.al.slice(4) }); });
+  lista.reduce(function (pr, x) { return pr.then(function () { return salva('Tariffe', x); }); }, Promise.resolve()).then(function () { render(); toast(lista.length + ' periodi copiati'); }).catch(errore);
+}
+
+/* =========================================================
+   VISTA: SPESE
+   ========================================================= */
+var CAT_SPESE = ['Pulizie', 'Lavanderia / biancheria', 'Manutenzione', 'Utenze', 'Condominio', 'Tasse e imposte', 'Commissioni bancarie', 'Arredi e dotazioni', 'Altro'];
+function vSpese() {
+  var anno = S.speseAnno || oggi().slice(0, 4);
+  var l = D.Spese.filter(function (s) { return s.data.slice(0, 4) === anno; }).sort(function (a, b) { return a.data < b.data ? 1 : -1; });
+  var tot = l.reduce(function (s, x) { return s + num(x.importo); }, 0);
+  var h = '<div class="bar"><select style="width:auto" onchange="S.speseAnno=this.value;render()">' + annoLista().map(function (a) { return '<option' + (a === anno ? ' selected' : '') + '>' + a + '</option>'; }).join('') + '</select><div class="sp"></div><button class="btn" onclick="apriSpesa()">+ Spesa</button></div>';
+  h += '<div class="card scroll"><table><tr><th>Data</th><th>Casa</th><th>Categoria</th><th>Descrizione</th><th class="n">Importo</th></tr>';
+  l.forEach(function (s) { h += '<tr class="click" onclick="apriSpesa(\'' + s.id + '\')"><td>' + fd(s.data) + '</td><td>' + (s.casaId ? '<span class="dot" style="background:' + casa(s.casaId).colore + '"></span>' + esc(casa(s.casaId).nome) : '<span class="muted">Tutte / comune</span>') + '</td><td>' + esc(s.categoria) + '</td><td>' + esc(s.descrizione) + '</td><td class="n">' + eur2(s.importo) + '</td></tr>'; });
+  if (!l.length) h += '<tr><td colspan="5" class="vuoto">Nessuna spesa registrata</td></tr>';
+  else h += '<tfoot><tr><td colspan="4">Totale ' + anno + '</td><td class="n">' + eur2(tot) + '</td></tr></tfoot>';
+  return h + '</table></div>';
+}
+function apriSpesa(id) {
+  var s = id ? D.Spese.find(function (x) { return x.id === id; }) : { data: oggi(), casaId: '', categoria: 'Pulizie', descrizione: '', importo: '' };
+  apriModale('<h3>' + (id ? 'Modifica spesa' : 'Nuova spesa') + '</h3><form id="fs" onsubmit="return false"><input type="hidden" name="id" value="' + esc(s.id || '') + '"><div class="f">' +
+    '<div><label>Data</label><input type="date" name="data" value="' + esc(s.data) + '"></div>' +
+    '<div class="w2"><label>Casa</label><select name="casaId"><option value="">Tutte / spesa comune</option>' + caseOrd().map(function (c) { return '<option value="' + c.id + '"' + (c.id === s.casaId ? ' selected' : '') + '>' + esc(c.nome) + '</option>'; }).join('') + '</select></div>' +
+    '<div><label>Categoria</label><select name="categoria">' + CAT_SPESE.map(function (c) { return '<option' + (c === s.categoria ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></div>' +
+    '<div class="w2"><label>Descrizione</label><input name="descrizione" value="' + esc(s.descrizione) + '"></div><div><label>Importo (€)</label><input name="importo" inputmode="decimal" value="' + esc(s.importo) + '"></div>' +
+    '</div><div class="bar" style="margin-top:16px">' + (id ? '<button class="btn del" onclick="elimina(\'Spese\',\'' + id + '\').then(function(){chiudiModale();render()})">Elimina</button>' : '') +
+    '<div class="sp"></div><button class="btn sec" onclick="chiudiModale()">Annulla</button><button class="btn" onclick="salvaSpesa()">Salva</button></div></form>');
+}
+function salvaSpesa() {
+  var s = leggiForm('fs'); s.importo = num(s.importo);
+  if (!s.data || !s.importo) { toast('Inserisci data e importo'); return; }
+  salva('Spese', s).then(function () { chiudiModale(); render(); toast('Spesa salvata'); }).catch(errore);
+}
+
+/* =========================================================
+   VISTA: IMPOSTAZIONI (case, calendari OTA, feed, tassa, commissioni, host)
+   ========================================================= */
+function vImpostazioni() {
+  var h = '<div class="card"><h2>Case</h2><div class="scroll"><table><tr><th>Nome</th><th>Colore</th><th>Su OTA</th><th>Indirizzo / note</th></tr>';
+  caseOrd().forEach(function (c) {
+    h += '<tr><td><input value="' + esc(c.nome) + '" onchange="aggCasaTxt(\'' + c.id + '\',\'nome\',this.value)"></td><td><input type="color" style="width:50px;padding:2px" value="' + esc(c.colore) + '" onchange="aggCasaTxt(\'' + c.id + '\',\'colore\',this.value)"></td>' +
+      '<td><input type="checkbox" style="width:auto"' + (c.ota ? ' checked' : '') + ' onchange="aggCasaTxt(\'' + c.id + '\',\'ota\',this.checked)"></td><td><input value="' + esc(c.indirizzo || '') + '" placeholder="Indirizzo, codice CIN…" onchange="aggCasaTxt(\'' + c.id + '\',\'indirizzo\',this.value)"></td></tr>';
+  });
+  h += '</table></div></div>';
+
+  // calendari OTA
+  h += '<div class="card"><div class="bar"><h2 style="margin:0">Calendari OTA collegati (importazione)</h2><div class="sp"></div><button class="btn sec" onclick="sincronizza()">⟳ Sincronizza ora</button></div>' +
+    '<p class="muted small" style="margin-top:-4px">Incolla qui il link iCal di <b>esportazione</b> fornito da ciascuna piattaforma. Il sistema li scarica automaticamente ogni 30 minuti.</p>';
+  caseOrd().filter(function (c) { return c.ota; }).forEach(function (c) {
+    h += '<div class="sez"><span class="dot" style="background:' + c.colore + '"></span>' + esc(c.nome) + '</div><table>';
+    CANALI_OTA.forEach(function (f) {
+      var cal = D.Calendari.find(function (x) { return x.casaId === c.id && x.fonte === f; }) || {};
+      h += '<tr><td style="width:110px"><b>' + f + '</b></td><td><input placeholder="https://… .ics" value="' + esc(cal.url || '') + '" onchange="salvaCal(\'' + c.id + '\',\'' + f + '\',this.value)"></td><td class="small" style="width:220px">' +
+        (cal.ultimoSync ? '<span class="tag ' + (String(cal.esito).indexOf('ERRORE') === 0 ? 'err' : 'ok') + '">' + esc(cal.esito) + '</span><div class="muted">' + new Date(cal.ultimoSync).toLocaleString('it-IT') + '</div>' : '<span class="muted">mai sincronizzato</span>') + '</td></tr>';
+    });
+    h += '</table>';
+  });
+  h += '</div>';
+
+  // feed di esportazione
+  var base = D.feedBase || '';
+  h += '<div class="card"><h2>Link da dare alle OTA (esportazione)</h2><p class="muted small" style="margin-top:-6px">Ogni piattaforma deve importare il proprio link: riceve le prenotazioni dirette e quelle delle <b>altre</b> OTA (non le sue, per evitare doppioni).</p>' +
+    '<label>URL del deployment "Feed" (vedi guida, passo 6)</label><div class="bar"><input id="feedBase" value="' + esc(base) + '" placeholder="https://script.google.com/macros/s/…/exec"><button class="btn sm" onclick="salvaFeed()">Salva</button></div>';
+  if (base) {
+    caseOrd().filter(function (c) { return c.ota; }).forEach(function (c) {
+      h += '<div class="sez"><span class="dot" style="background:' + c.colore + '"></span>' + esc(c.nome) + '</div><table>';
+      CANALI_OTA.forEach(function (f) {
+        var u = base + '?feed=' + encodeURIComponent(c.id) + '&t=' + encodeURIComponent(D.token) + '&x=' + f.toLowerCase();
+        h += '<tr><td style="width:110px"><b>' + f + '</b></td><td><code class="u">' + esc(u) + '</code></td><td style="width:80px"><button class="btn sm sec" onclick="copia(\'' + esc(u) + '\')">Copia</button></td></tr>';
+      });
+      h += '</table>';
+    });
+  }
+  h += '</div>';
+
+  // tassa, commissioni, host
+  var campo = function (k, l, w) { return '<div' + (w ? ' class="w2"' : '') + '><label>' + l + '</label><input value="' + esc(imp(k)) + '" onchange="salvaImp(\'' + k + '\',this.value)"></div>'; };
+  h += '<div class="grid g2"><div class="card"><h2>Tassa di soggiorno</h2><div class="f">' + campo('tassaImporto', '€ a persona a notte') + campo('tassaEta', 'Paga chi ha più di (anni)') + campo('tassaMaxNotti', 'Notti massime consecutive') + campo('tassaMesi', 'Mesi (numeri separati da virgola)') + '</div></div>';
+  h += '<div class="card"><h2>Commissioni OTA predefinite (%)</h2><div class="f">' + CANALI_OTA.map(function (c) { return campo('comm_' + c, c); }).join('') + '</div><p class="small muted">Precompilano la commissione: puoi sempre correggerla nella singola prenotazione con l\'importo reale.</p></div></div>';
+  h += '<div class="card"><h2>Host per l\'accoglienza</h2><p class="muted small" style="margin-top:-6px">Con il numero di telefono compare il pulsante WhatsApp per mandare all\'host i dettagli di arrivo/partenza.</p><div class="f">' + HOST_DEFAULT.map(function (x) { return campo('host_' + x, 'Telefono ' + x); }).join('') + '</div></div>';
+  h += '<div class="card"><h2>Backup</h2><button class="btn sec" onclick="backup()">Scarica backup completo (JSON)</button> <button class="btn sec" onclick="esportaCsv()">Esporta prenotazioni (CSV)</button></div>';
+  return h;
+}
+function aggCasaTxt(id, k, v) { var c = Object.assign({}, casa(id)); c[k] = v; salva('Case', c).then(function () { render(); toast('Salvato'); }).catch(errore); }
+function salvaCal(casaId, fonte, url) {
+  var c = D.Calendari.find(function (x) { return x.casaId === casaId && x.fonte === fonte; });
+  if (!url.trim() && c) { elimina('Calendari', c.id).then(function () { toast('Calendario rimosso'); }); return; }
+  c = Object.assign({ casaId: casaId, fonte: fonte, ultimoSync: '', esito: '' }, c || {}, { url: url.trim() });
+  salva('Calendari', c).then(function () { toast('Link salvato'); }).catch(errore);
+}
+function salvaImp(k, v) { salva('Impostazioni', { chiave: k, valore: v }).then(function () { toast('Salvato'); }).catch(errore); }
+function salvaFeed() { var u = $('feedBase').value.trim(); API.feedUrl(u).then(function () { D.feedBase = u; render(); toast('Salvato'); }).catch(errore); }
+function copia(t) { (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { toast('Link copiato'); }).catch(function () { prompt('Copia il link:', t); }); }
+function backup() {
+  var b = new Blob([JSON.stringify(D, null, 1)], { type: 'application/json' }), a = document.createElement('a');
+  a.href = URL.createObjectURL(b); a.download = 'backup-gestionale-noli-' + oggi() + '.json'; a.click();
+}
+
+avvia();
+</script>
+</body>
+</html>
